@@ -1,18 +1,22 @@
 import xxhash
 
-string = input("Please enter the string: ")
-
-hash_object = xxhash.xxh64(string.encode())
-
-print('Hash object:', hash_object)
-
-#xxhash is the library, xxh64 is function inside the library that creates HASH OBJECT from data
-#encode() method converts string into bytes.
-
-hash_value = hash_object.intdigest()
-print('Number representation of the hash object:', hash_value)
-
 n = int(input('Bucket amount: '))
-print('The object is inside bucket', hash_value%n)
+#s = int(input('Size of a bucket: '))
+for i in range(n): #creating n buckets [temporary as a list]
+    globals()[f"b{i}"] = []
 
-#conceptual bucket rearranging
+stop = 0
+while (not stop): #temporary EOF alternative
+    string = input("Please enter the string: ")
+    hash_object = xxhash.xxh64(string.encode())
+    hash_value = hash_object.intdigest()
+
+    bucket = hash_value%n
+
+    print('String arranged into bucket', bucket)
+    globals()[f"b{bucket}"].append(string) #appending string into corresponding bucket
+
+    stop=input('Stop? ') #type to exit/enter to continue
+
+for i in range(n):
+    print(i, globals()[f"b{i}"])
