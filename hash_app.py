@@ -1,14 +1,9 @@
 import xxhash
+import os
+import sys
 
-n = int(input('Bucket amount: '))
-s = int(input('Size of a bucket: '))
-for i in range(1, n+1):
-    globals()[f"b{i}"] = ""
-
-for i in range(1, n+1):
-    file_path = f"{i}"
-    with open(file_path, 'w') as file:
-        file.write('')
+n = int(sys.argv[1])
+s = int(sys.argv[2])
 
 while True: #EOF loop
     try:
@@ -18,15 +13,18 @@ while True: #EOF loop
 
         bucket = hash_value%n + 1
 
-        print('String arranged into bucket', bucket)
+        print(f"{string} added to {bucket}.txt")
 
-        if (len(globals()[f"b{bucket}"]) + len(string) <= s): #size restriction
-            globals()[f"b{bucket}"] += string #appending string into corresponding bucket
-            with open(f"{bucket}", 'w') as file:
-                file.write(globals()[f"b{bucket}"])
+        file_path = f"{bucket}.txt" #file bucket creation
+        if os.path.exists(file_path): #current size comes from the file itself
+            with open(file_path, 'r') as file:
+                curr_length = len(file.read())
+        else:
+            curr_length = 0
 
-    except EOFError :
+        if (curr_length + len(string) <= s): #size restriction
+            with open(file_path, 'a') as file:
+                file.write(string) #appending strings into files
+
+    except (EOFError, KeyboardInterrupt): #exiting with ctrl+c 
         break
-
-for i in range(1, n+1):
-    print(i, globals()[f"b{i}"])
